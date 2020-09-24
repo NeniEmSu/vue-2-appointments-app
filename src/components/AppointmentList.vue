@@ -49,22 +49,57 @@
           >
             <button
               class="mr-2 btn btn-sm btn-danger"
-              @click="removeRecord(appointment)"
+              @click="$emit('remove', appointment)"
             >
               <b-icon-trash-fill></b-icon-trash-fill>
             </button>
             <div class="w-100">
               <div class="d-flex justify-content-between">
-                <span class="h4 text-primary" contenteditable="contenteditable" @blur="editItem(appointment.aptId, 'petName', $event.target.innerText)">{{ appointment.petName }}</span>
+                <span
+                  class="h4 text-primary"
+                  contenteditable="contenteditable"
+                  @blur="
+                    $emit(
+                      'edit',
+                      appointment.aptId,
+                      'petName',
+                      $event.target.innerText
+                    )
+                  "
+                  >{{ appointment.petName }}</span
+                >
                 <span class="float-right">{{
                   formatDate(appointment.aptDate)
                 }}</span>
               </div>
               <div class="owner-name">
                 <span class="font-weight-bold text-primary mr-1">Owner:</span>
-                <span contenteditable="contenteditable" @blur="editItem(appointment.aptId, 'petOwner', $event.target.innerText)">{{ appointment.petOwner }}</span>
+                <span
+                  contenteditable="contenteditable"
+                  @blur="
+                    $emit(
+                      'edit',
+                      appointment.aptId,
+                      'petOwner',
+                      $event.target.innerText
+                    )
+                  "
+                  >{{ appointment.petOwner }}</span
+                >
               </div>
-              <div contenteditable="contenteditable" @blur="editItem(appointment.aptId, 'petNotes', $event.target.innerText)">{{ appointment.aptNotes }}</div>
+              <div
+                contenteditable="contenteditable"
+                @blur="
+                  $emit(
+                    'edit',
+                    appointment.aptId,
+                    'petNotes',
+                    $event.target.innerText
+                  )
+                "
+              >
+                {{ appointment.aptNotes }}
+              </div>
             </div>
           </div>
         </div>
@@ -80,50 +115,29 @@
 </template>
 
 <script>
-import axios from "axios";
 import moment from "moment";
 export default {
   name: "AppointMentList",
-  data() {
-    return {
-      appointments: [],
-      loading: false,
-      error: "",
-      aptIndex: 0,
-    };
+  props: {
+    appointments: {
+      default: () => [],
+      type: Array,
+    },
+    loading: {
+      default: false,
+      type: Boolean,
+    },
+    error: {
+      default: "",
+      type: String,
+    },
   },
-  mounted() {
-    this.getAppointments();
+  data() {
+    return {};
   },
   methods: {
     formatDate: (date) => {
       return moment(new Date(date)).format("MM-DD-YY, hh:mm a");
-    },
-    editItem(id, field, text){
-        const itemIndex = this.appointments.findIndex(item => item.aptId === id)
-        this.appointments[itemIndex][field ]= text        
-    },
-    removeRecord(item) {
-      this.appointments = this.appointments.filter((elm) => elm !== item);
-      //   Or using lodash
-      //   this.appointments = _.without(this.appointments, item)
-    },
-    async getAppointments() {
-      this.loading = true;
-      try {
-        const RESPONSE = await axios.get(
-          "https://gist.githubusercontent.com/planetoftheweb/46426d47f21f2c9245bbe23f0fb834b5/raw/afae0adf97472893288ac5cde69e7bbb770793ed/appointments.json"
-        );
-        this.appointments = RESPONSE.data.map((item) => {
-          item.aptId = this.aptIndex;
-          this.aptIndex++;
-          return item;
-        });
-      } catch (error) {
-        this.error = error;
-      } finally {
-        this.loading = false;
-      }
     },
   },
 };

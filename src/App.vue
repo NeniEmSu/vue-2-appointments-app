@@ -2,7 +2,10 @@
   <div id="app" class="container">
     <h1>{{ title }}</h1>
     <b-icon-plus></b-icon-plus><span>Add appointment</span>
-    <AppointmentList />
+    <div class="ro">
+      <AppointmentList />
+    </div>
+    
   </div>
 </template>
 

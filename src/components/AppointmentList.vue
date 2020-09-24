@@ -5,7 +5,7 @@
         <div class="col-12 col-md-10 col-lg-7">
           <div class="list-group list-group-flush">
             <div
-              class="list-group-item d-flex"
+              class="list-group-item d-flex align-items-start"
               v-for="(item, index) in 3"
               :key="index"
             >
@@ -43,9 +43,9 @@
       <div v-else class="col-12 col-md-10 col-lg-7">
         <div class="list-group list-group-flush">
           <div
-            class="list-group-item d-flex"
-            v-for="(appointment, index) in appointments"
-            :key="index"
+            class="list-group-item d-flex align-items-start"
+            v-for="appointment in appointments"
+            :key="appointment.aptId"
           >
             <button
               class="mr-2 btn btn-sm btn-danger"
@@ -89,6 +89,7 @@ export default {
       appointments: [],
       loading: false,
       error: "",
+      aptIndex: 0,
     };
   },
   mounted() {
@@ -100,9 +101,8 @@ export default {
     },
     removeRecord(item) {
       this.appointments = this.appointments.filter((elm) => elm !== item);
-    //   Or using lodash
-    //   this.appointments = _.without(this.appointments, item)
-
+      //   Or using lodash
+      //   this.appointments = _.without(this.appointments, item)
     },
     async getAppointments() {
       this.loading = true;
@@ -110,7 +110,11 @@ export default {
         const RESPONSE = await axios.get(
           "https://gist.githubusercontent.com/planetoftheweb/46426d47f21f2c9245bbe23f0fb834b5/raw/afae0adf97472893288ac5cde69e7bbb770793ed/appointments.json"
         );
-        this.appointments = RESPONSE.data;
+        this.appointments = RESPONSE.data.map((item) => {
+          item.aptId = this.aptIndex;
+          this.aptIndex++;
+          return item;
+        });
       } catch (error) {
         this.error = error;
       } finally {

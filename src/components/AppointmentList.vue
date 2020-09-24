@@ -55,16 +55,16 @@
             </button>
             <div class="w-100">
               <div class="d-flex justify-content-between">
-                <span class="h4 text-primary">{{ appointment.petName }}</span>
+                <span class="h4 text-primary" contenteditable="contenteditable" @blur="editItem(appointment.aptId, 'petName', $event.target.innerText)">{{ appointment.petName }}</span>
                 <span class="float-right">{{
                   formatDate(appointment.aptDate)
                 }}</span>
               </div>
               <div class="owner-name">
                 <span class="font-weight-bold text-primary mr-1">Owner:</span>
-                <span>{{ appointment.petOwner }}</span>
+                <span contenteditable="contenteditable" @blur="editItem(appointment.aptId, 'petOwner', $event.target.innerText)">{{ appointment.petOwner }}</span>
               </div>
-              <div>{{ appointment.aptNotes }}</div>
+              <div contenteditable="contenteditable" @blur="editItem(appointment.aptId, 'petNotes', $event.target.innerText)">{{ appointment.aptNotes }}</div>
             </div>
           </div>
         </div>
@@ -98,6 +98,10 @@ export default {
   methods: {
     formatDate: (date) => {
       return moment(new Date(date)).format("MM-DD-YY, hh:mm a");
+    },
+    editItem(id, field, text){
+        const itemIndex = this.appointments.findIndex(item => item.aptId === id)
+        this.appointments[itemIndex][field ]= text        
     },
     removeRecord(item) {
       this.appointments = this.appointments.filter((elm) => elm !== item);

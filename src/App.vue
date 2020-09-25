@@ -105,7 +105,9 @@ export default {
       } catch (error) {
         this.error = error;
       } finally {
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 3000);
       }
     },
   },

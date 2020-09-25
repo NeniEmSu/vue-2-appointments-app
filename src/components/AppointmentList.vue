@@ -68,9 +68,12 @@
                   "
                   >{{ appointment.petName }}</span
                 >
-                <span class="float-right">{{
-                  formatDate(appointment.aptDate)
-                }}</span>
+                <time
+                  :datetime="formatDateTime(appointment.aptDate)"
+                  class="float-right"
+                >
+                  {{ formatDate(appointment.aptDate) }}
+                </time>
               </div>
               <div class="owner-name">
                 <span class="font-weight-bold text-primary mr-1">Owner:</span>
@@ -137,7 +140,13 @@ export default {
   },
   methods: {
     formatDate: (date) => {
-      return moment(new Date(date)).format("MM-DD-YY, hh:mm a");
+      const TODAY = new Date();
+      const APT_DATE = new Date(date);
+      if (TODAY < APT_DATE) return moment(APT_DATE).format("MM-DD-YY, hh:mm a");
+      else return moment(APT_DATE).fromNow();
+    },
+    formatDateTime: (date) => {
+      return moment(new Date(date)).format("YYYY-MM-DDTHH:mm");
     },
   },
 };
